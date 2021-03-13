@@ -1,6 +1,8 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
-import cors from 'cors';
+import cors from "cors";
+import usuariosRoutes from "./routes/usuarios.routes";
+import db from "./database/connection";
 class Server {
   public app: Application;
   constructor() {
@@ -16,11 +18,26 @@ class Server {
     this.app.set("port", process.env.PORT || 3000);
     //this.app.use(morgan('dev'));
     this.app.use(cors());
+    this.dbConnection();
     this.app.use(express.json());
-    this.app.use(express.urlencoded({extended:false}));
+    this.app.use(express.urlencoded({ extended: false }));
+    //Public
   }
+  async dbConnection() {
+
+    try {
+        
+        await db.authenticate();
+        console.log('Database online');
+
+    } catch (error) {
+        throw new Error( error );
+    }
+
+}
   // Rutas
   routes(): void {
+    this.app.use("/api/usuarios", usuariosRoutes);
   }
   // Iniciar el server
   start(): void {
