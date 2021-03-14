@@ -42,20 +42,37 @@ export class UsuariosController {
       });
     }
   }
-  public static putUsuario(req: Request, resp: Response) {
+  public static async putUsuario(req: Request, resp: Response) {
     const { id } = req.params;
     const { body } = req;
-    resp.json({
-      msg: "Put Usuario",
-      body,
-      id,
-    });
+    try {
+      const usuario = await Usuario.findByPk(id);
+      if (!usuario) {
+        return resp.status(404).json({
+          msg: "No existe un usuario con el id " + id,
+        });
+      }
+      await usuario.update(body);
+      resp.json(usuario);
+    } catch (error) {
+      console.log(error);
+      resp.status(500).json({
+        msg: "Hable con el administrador",
+      });
+    }
   }
-  public static deleteUsuario(req: Request, resp: Response) {
+  public static async deleteUsuario(req: Request, resp: Response) {
     const { id } = req.params;
-    resp.json({
-      msg: "Delete Usuario",
-      id,
-    });
+    const usuario = await Usuario.findByPk(id);
+    if (!usuario) {
+      return resp.status(404).json({
+        msg: "No existe un usuario con el id " + id,
+      });
+    }
+    // SETEAR EL ESTADO COMO DESACTIVAD
+    await usuario.update({ estado: false });
+    // BORRAR EL USUARIO
+    // await usuario.destroy();
+    resp.json(usuario);
   }
 }
