@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Usuario from "../models/Usuario";
-import {Helper} from '../helpers/jwt'
 export class UsuariosController {
   public static async getUsuarios(req: Request, resp: Response) {
     const usuarios = await Usuario.findAll();
@@ -10,18 +9,15 @@ export class UsuariosController {
   public static async getUsuario(req: Request, resp: Response) {
     const { id } = req.params;
     const usuario: any = await Usuario.findByPk(id);
-    const token = await Helper.generarJWT(usuario.id);
     if (usuario) {
-      resp.json({
-        usuario,
-        token
-      });
+      resp.json(usuario);
     } else {
       resp.status(404).json({
         msg: `No existe un usuario con el id ${id}`,
       });
     }
   }
+
   public static async postUsuario(req: Request, resp: Response) {
     const { body } = req;
     try {
@@ -38,8 +34,7 @@ export class UsuariosController {
       const salt = bcrypt.genSaltSync();
       usuario.password = bcrypt.hashSync(password, salt);
       await usuario.save();
-      const token = await Helper.generarJWT(usuario.id);
-      resp.json({usuario, token});
+      resp.json(usuario);
     } catch (error) {
       console.log(error);
       resp.status(500).json({

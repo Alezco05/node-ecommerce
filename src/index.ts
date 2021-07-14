@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import apiRoutes from "./routes/index.routes";
+import authRoutes from "./routes/auth.routes";
 import db from "./database/connection";
 class Server {
   public app: Application;
@@ -33,6 +34,8 @@ class Server {
   }
   // Rutas
   routes(): void {
+    
+    this.app.use("/auth", authRoutes);
     this.app.use("/api", apiRoutes);
   }
   // Iniciar el server
