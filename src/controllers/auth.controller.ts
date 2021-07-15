@@ -7,7 +7,10 @@ export interface IGetUserAuthInfoRequest extends Request {
   }
   
 export class AuthController {
+  
+
   public static async signUp(req: Request, resp: Response) {
+    
     const { body } = req;
     try {
       const email = await Usuario.findOne({
@@ -17,11 +20,13 @@ export class AuthController {
         return resp
           .status(400)
           .json({ msg: "Ya existe un usuario con el email " + body.email });
-      }
+      }   
       const usuario: any = await Usuario.create(body);
-      let { password } = body;
-      const salt = bcrypt.genSaltSync();
-      usuario.password = bcrypt.hashSync(password, salt);
+      Usuario.beforeCreate(function(user, options) {
+        let { password } = body;
+        const salt = bcrypt.genSaltSync();
+        usuario.password =  bcrypt.hashSync(password, salt);
+      });
       await usuario.save();
       const token = await Helper.generarJWT(usuario.id);
       resp.json({ usuario, token });
@@ -35,7 +40,7 @@ export class AuthController {
   public static async signIn(req: Request, res: Response) {
     const { email, password } = req.body;
     try {
-      const usuarioDB: any = await Usuario.findOne({ where: email });
+      const usuarioDB: any = await Usuario.findOne({ where: {email} });
       if (!usuarioDB) {
         return res.status(404).json({
           ok: false,
@@ -50,7 +55,7 @@ export class AuthController {
         });
       }
       // Generar el TOKEN - JWT
-      const token = Helper.generarJWT(usuarioDB.id);
+      const token = await Helper.generarJWT(usuarioDB.id);
       res.json({
         ok: true,
         token,

@@ -4,6 +4,7 @@ import cors from "cors";
 import apiRoutes from "./routes/index.routes";
 import authRoutes from "./routes/auth.routes";
 import db from "./database/connection";
+import validarJWT from "./middleware/jwt-validation";
 class Server {
   public app: Application;
   constructor() {
@@ -36,7 +37,7 @@ class Server {
   routes(): void {
     
     this.app.use("/auth", authRoutes);
-    this.app.use("/api", apiRoutes);
+    this.app.use("/api", validarJWT, apiRoutes);
   }
   // Iniciar el server
   start(): void {
