@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 export default function validarJWT(req: any, res: Response, next: NextFunction)  {
-    console.log('ENro')
     // Leer el Token
     const token = req.header('x-token');
     if ( !token ) {
