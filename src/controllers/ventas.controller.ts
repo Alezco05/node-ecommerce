@@ -22,12 +22,9 @@ export class VentasController {
   public static async postVenta(req: any, resp: Response, next: NextFunction) {
     const { body } = req;
     try {
-      let id;
       const venta: any = await Ventas.create(body)
-      .then((result: any) => id = result.id);
-      body["ventas_id"] = id;
-      const ventaDetalle: any = await VentasDetalle.create(body);
-      await ventaDetalle.save();
+      body["ventas_id"] = venta.id;
+      const ventaDetalle = await VentasDetalle.create(body);
       resp.json({ venta, ventaDetalle });
     } catch (error) {
       console.log(error);
