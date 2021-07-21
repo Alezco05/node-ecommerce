@@ -17,13 +17,9 @@ export class VentasDetallesController {
     }
   }
 
-  public static async postVentaDetalle(req: any, resp: Response) {
-    const { body } = req;
+  public static async postVentaDetalle(body: any, resp: Response) {
     try {
-      const venta: any = await VentasDetalle.create(body);
-      await venta.save();
-      // resp.json(venta);
-      return venta;
+      return await VentasDetalle.create(body);
     } catch (error) {
       console.log(error);
       resp.status(500).json({

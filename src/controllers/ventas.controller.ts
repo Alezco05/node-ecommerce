@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import Ventas from "../models/Venta";
-import VentasDetalle from "../models/VentaDetalle";
 import { VentasDetallesController } from "./ventasDetalles.controller";
 export class VentasController {
   public static async getVentas(req: Request, resp: Response) {
@@ -24,7 +23,7 @@ export class VentasController {
     try {
       const venta: any = await Ventas.create(body)
       body["ventas_id"] = venta.id;
-      const ventaDetalle = await VentasDetalle.create(body);
+      const ventaDetalle = await VentasDetallesController.postVentaDetalle(body, resp);
       resp.json({ venta, ventaDetalle });
     } catch (error) {
       console.log(error);
