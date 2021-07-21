@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import Ventas from "../models/Venta";
+import VentasDetalle from "../models/VentaDetalle";
 export class VentasDetallesController {
   public static async getVentas(req: Request, resp: Response) {
-    const usuarios = await Ventas.findAll();
+    const usuarios = await VentasDetalle.findAll();
     resp.json({ usuarios });
   }
   public static async getVenta(req: Request, resp: Response) {
     const { id } = req.params;
-    const venta: any = await Ventas.findByPk(id);
+    const venta: any = await VentasDetalle.findByPk(id);
     if (venta) {
       resp.json(venta);
     } else {
@@ -20,9 +20,9 @@ export class VentasDetallesController {
   public static async postVentaDetalle(req: any, resp: Response) {
     const { body } = req;
     try {
-      const venta: any = await Ventas.create(body);
+      const venta: any = await VentasDetalle.create(body);
       await venta.save();
-      resp.json(venta);
+      // resp.json(venta);
       return venta;
     } catch (error) {
       console.log(error);
@@ -35,7 +35,7 @@ export class VentasDetallesController {
     const { id } = req.params;
     const { body } = req;
     try {
-      const venta = await Ventas.findByPk(id);
+      const venta = await VentasDetalle.findByPk(id);
       if (!venta) {
         return resp.status(404).json({
           msg: "No existe un venta con el id " + id,

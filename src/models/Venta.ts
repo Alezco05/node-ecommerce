@@ -6,6 +6,7 @@ const Ventas = db.define("ventas", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   fecha: {
     type: DataTypes.DATE,
@@ -37,6 +38,6 @@ function formatDate(date) {
   return [year, month, day].join("-");
 }
 Ventas.hasMany(Usuario, {
-  foreignKey: "usuario_id",
+  foreignKey: "id",
 });
 export default Ventas;

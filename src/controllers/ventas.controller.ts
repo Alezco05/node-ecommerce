@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Ventas from "../models/Venta";
-import {VentasDetallesController} from "./ventasDetalles.controller";
+import VentasDetalle from "../models/VentaDetalle";
+import { VentasDetallesController } from "./ventasDetalles.controller";
 export class VentasController {
   public static async getVentas(req: Request, resp: Response) {
     const usuarios = await Ventas.findAll();
@@ -21,15 +22,17 @@ export class VentasController {
   public static async postVenta(req: any, resp: Response, next: NextFunction) {
     const { body } = req;
     try {
-      const venta: any = await Ventas.create(body);
-      await venta.save();
-      req.venta_id = venta.id;
-      next();
-      const ventaDetalle = VentasDetallesController.postVentaDetalle(req,resp);
-      resp.json({venta,ventaDetalle});
+      let id;
+      const venta: any = await Ventas.create(body)
+      .then((result: any) => id = result.id);
+      body["ventas_id"] = id;
+      const ventaDetalle: any = await VentasDetalle.create(body);
+      await ventaDetalle.save();
+      resp.json({ venta, ventaDetalle });
     } catch (error) {
       console.log(error);
       resp.status(500).json({
+        error,
         msg: "Hable con el administrador",
       });
     }

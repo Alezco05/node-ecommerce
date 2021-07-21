@@ -7,6 +7,7 @@ const VentasDetalle = db.define("ventas_detalle", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   ventas_id: {
     type: DataTypes.INTEGER,
@@ -28,10 +29,10 @@ const VentasDetalle = db.define("ventas_detalle", {
   },
 });
 
-VentasDetalle.hasMany(Usuario, {
-  foreignKey: "ventas_id",
-});
 VentasDetalle.hasMany(Ventas, {
-  foreignKey: "usuario_id",
+  foreignKey: "id",
+});
+VentasDetalle.hasMany(Usuario, {
+  foreignKey: "id",
 });
 export default VentasDetalle;

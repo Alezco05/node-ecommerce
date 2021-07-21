@@ -31,7 +31,6 @@ export class AuthController {
       const token = await Helper.generarJWT(usuario.id);
       resp.json({ usuario, token });
     } catch (error) {
-      console.log(error);
       resp.status(500).json({
         msg: "Hable con el administrador",
       });
@@ -64,6 +63,7 @@ export class AuthController {
     } catch (error) {
       console.log(error);
       res.status(500).json({
+        error,
         ok: false,
         msg: "Hable con el administrador",
       });

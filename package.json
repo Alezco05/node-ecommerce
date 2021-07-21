@@ -10,7 +10,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "start": "nodemon dist/",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "kill": "pkill -f nodemon"
   },
   "author": "",
   "license": "ISC",
