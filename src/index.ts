@@ -10,8 +10,8 @@ import { Server, Socket } from "socket.io";
 
 class ServerApp {
   public app: Application;
-  httpServer; 
-  io: Server; 
+  httpServer;
+  io: Server;
   constructor() {
     // Express
     this.app = express();
@@ -46,14 +46,17 @@ class ServerApp {
   // Iniciar el server
   start(): void {
     this.httpServer = createServer(this.app);
-    this.io = new Server(this.httpServer);
+    const options = {
+      cors: {
+        origin: "http://localhost:4200",
+      },
+    };
+    this.io = new Server(this.httpServer, options);
+    this.httpServer.listen(this.app.get("port"));
     this.io.on("connection", (socket: Socket) => {
-     console.log('Server')
+      console.log("Connected");
     });
-    this.httpServer.listen(this.app.get('port'), () => {
-      console.log("Server on Port", this.app.get("port"));
-    });
-    /*  this.app.listen(this.app.get("port"), () => {
+ /*     this.app.listen(this.app.get("port"), () => {
       console.log("Server on Port", this.app.get("port"));
     }); */
   }
