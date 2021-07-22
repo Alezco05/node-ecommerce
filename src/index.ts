@@ -5,8 +5,13 @@ import apiRoutes from "./routes/index.routes";
 import authRoutes from "./routes/auth.routes";
 import db from "./database/connection";
 import validarJWT from "./middleware/jwt-validation";
-class Server {
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+
+class ServerApp {
   public app: Application;
+  httpServer; 
+  io: Server; 
   constructor() {
     // Express
     this.app = express();
@@ -35,16 +40,23 @@ class Server {
   }
   // Rutas
   routes(): void {
-    
     this.app.use("/auth", authRoutes);
     this.app.use("/api", validarJWT, apiRoutes);
   }
   // Iniciar el server
   start(): void {
-    this.app.listen(this.app.get("port"), () => {
+    this.httpServer = createServer(this.app);
+    this.io = new Server(this.httpServer);
+    this.io.on("connection", (socket: Socket) => {
+     console.log('Server')
+    });
+    this.httpServer.listen(this.app.get('port'), () => {
       console.log("Server on Port", this.app.get("port"));
     });
+    /*  this.app.listen(this.app.get("port"), () => {
+      console.log("Server on Port", this.app.get("port"));
+    }); */
   }
 }
-const server: Server = new Server();
+const server: ServerApp = new ServerApp();
 server.start();
